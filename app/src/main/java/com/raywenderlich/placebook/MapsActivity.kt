@@ -12,12 +12,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.raywenderlich.placebook.databinding.ActivityMapsBinding
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    private var locationRequest: LocationRequest? = null
     private lateinit var map: GoogleMap
     private lateinit var binding: ActivityMapsBinding
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -48,7 +46,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-
         getCurrentLocation()
     }
 
@@ -72,33 +69,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         ) {
             requestLocationPermission()
         } else {
+            map.setPadding(0, 140, 0, 0)
+            map.isMyLocationEnabled = true
             fusedLocationClient.lastLocation.addOnCompleteListener {
                 val location = it.result
-                if (locationRequest == null) {
-                    locationRequest = LocationRequest.create()
-                    locationRequest?.let { locationRequest ->
-                        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-
-                        locationRequest.interval = 5000
-                        locationRequest.fastestInterval = 1000
-
-                        val locationCallback = object : LocationCallback() {
-                            override fun onLocationResult(locationResult: LocationResult) {
-                                getCurrentLocation()
-                            }
-                        }
-                        fusedLocationClient.requestLocationUpdates(
-                            locationRequest,
-                            locationCallback,
-                            null
-                        )
-                    }
-                    val latLng = LatLng(location?.latitude ?: 0.0, location?.longitude ?: 0.0)
-
-                    map.addMarker(MarkerOptions().position(latLng).title("You are here!"))
-
+                if (location != null) {
+                    val latLng = LatLng(location.latitude, location.longitude)
                     val update = CameraUpdateFactory.newLatLngZoom(latLng, 16.0f)
-
                     map.moveCamera(update)
                 } else {
                     Log.e(TAG, "No location found")
