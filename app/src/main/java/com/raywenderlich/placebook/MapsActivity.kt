@@ -69,6 +69,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun displayPoi(pointOfInterest: PointOfInterest) {
+        displayPoiGetPlaceStep(pointOfInterest)
+    }
+
+    private fun displayPoiGetPlaceStep(pointOfInterest: PointOfInterest) {
         val placeId = pointOfInterest.placeId
 
         val placeFields = listOf(
