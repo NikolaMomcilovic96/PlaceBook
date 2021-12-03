@@ -168,6 +168,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 .snippet(place.phoneNumber)
         )
         marker?.tag = PlaceInfo(place, photo)
+        marker?.showInfoWindow()
     }
 
     private fun setupLocationClient() {
@@ -234,6 +235,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val marker = map.addMarker(
             MarkerOptions()
                 .position(bookmark.location)
+                .title(bookmark.name)
+                .snippet(bookmark.phone)
                 .icon(
                     BitmapDescriptorFactory.defaultMarker(
                         BitmapDescriptorFactory.HUE_AZURE
