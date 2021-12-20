@@ -16,7 +16,7 @@ import com.raywenderlich.placebook.util.ImageUtils
 class MapsViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = "MapsViewModel"
     private val bookmarkRepo: BookmarkRepo = BookmarkRepo(getApplication())
-    private var bookmarks: LiveData<List<BookmarkMarkerView>>? = null
+    private var bookmarks: LiveData<List<BookmarkView>>? = null
 
     fun addBookmarkFromPlace(place: Place, image: Bitmap?) {
         val bookmark = bookmarkRepo.createBookmark()
@@ -32,26 +32,26 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
         Log.i(TAG, "New bookmark $newId added to the database.")
     }
 
-    private fun bookmarkToMarkerView(bookmark: Bookmark) = BookmarkMarkerView(
+    private fun bookmarkToBookmarkView(bookmark: Bookmark) = BookmarkView(
         bookmark.id, LatLng(bookmark.latitude, bookmark.longitude), bookmark.name, bookmark.phone
     )
 
-    private fun mapBookmarksToMarkerView() {
+    private fun mapBookmarksToBookmarkView() {
         bookmarks = Transformations.map(bookmarkRepo.allBookmarks) { repoBookmarks ->
             repoBookmarks.map { bookmark ->
-                bookmarkToMarkerView(bookmark)
+                bookmarkToBookmarkView(bookmark)
             }
         }
     }
 
-    fun getBookmarkMarkerViews(): LiveData<List<BookmarkMarkerView>>? {
+    fun getBookmarkViews(): LiveData<List<BookmarkView>>? {
         if (bookmarks == null) {
-            mapBookmarksToMarkerView()
+            mapBookmarksToBookmarkView()
         }
         return bookmarks
     }
 
-    data class BookmarkMarkerView(
+    data class BookmarkView(
         var id: Long? = null,
         var location: LatLng = LatLng(0.0, 0.0),
         var name: String = "",
